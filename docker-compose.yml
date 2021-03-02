@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  bugzilla:
+    build: ./build/bugzilla/
+    image: bugzilla:5.0.6
+    container_name: bugzilla
+    restart: always
+    volumes:
+      - ./volumes/bugzilla/data:/var/www/html/bugzilla/data
+      - ./volumes/bugzilla/graphs:/var/www/html/bugzilla/graphs
+      - ./volumes/bugzilla/localconfig:/var/www/html/bugzilla/localconfig
+    depends_on:
+      - database
+    expose:
+      - 80
+      - 443
+    ports:
+      - 80:80
+      - 443:443
+
+  database:
+    image: mariadb:10.3.23
+    container_name: database
+    restart: always
+    volumes:
+      - ./volumes/mariadb:/var/lib/mysql
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=openfind
+      - MYSQL_DATABASE=bugs
+      - MYSQL_USER=bugs
+      - MYSQL_PASSWORD=bugpw
